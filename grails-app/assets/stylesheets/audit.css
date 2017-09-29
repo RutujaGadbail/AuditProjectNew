@@ -1,0 +1,25 @@
+body{
+    /*color: #48802C;*/
+
+    color: black;
+    background: lightgray;
+    background-image: url("main.jpg");
+    background-button:green;
+}
+/*h1{*/
+    /*margin-left: 100px;*/
+    /*font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;*/
+/*}*/
+
+h1{margin-top: 10px;
+    align-items: center;
+    margin-left: 100px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+form{
+    margin-right: 100px;
+}
+    displaytable{
+        background-color: #006dba;
+    }
