@@ -13,6 +13,6 @@ class UrlMappings {
         "500"(view:'/error')
 
         "/api/log" (controller: "audit",action: "log",method:"post")
-
+        "/api/audit"(controller: "API", action: "getEvents")
 	}
 }

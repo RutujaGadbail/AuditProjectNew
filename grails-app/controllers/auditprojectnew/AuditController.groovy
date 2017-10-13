@@ -5,11 +5,11 @@ import grails.converters.XML
 import grails.rest.RestfulController
 import org.fusesource.jansi.AnsiRenderer
 
+import java.awt.Event
 import java.sql.Timestamp
 import groovy.json.JsonSlurper
 
 class AuditController {
-
     private final static String SHOW_ALL_AUDIT_EVENT_TYPES = "1"
     private final static String SHOW_USER_SELECTED_EVENT_TYPE_ONLY = "2"
 
@@ -18,7 +18,7 @@ class AuditController {
     private final static String SHOW_EVENTS_FOR_ALL_APPS = "1"
 
     def auditService
-    static scaffold = Audit
+  static scaffold = Audit
 
     def log() {
         response.setContentType('application/json')
@@ -31,15 +31,23 @@ class AuditController {
             println params.appCode
             String auditToken = auditService.log(params.auditEvent, params.userId, params.userName, params.text, params.appCode)
             render("${[auditToken: auditToken] as JSON}")
+
         }
         catch (Exception exception) {
             log.error "Error saving audit " + exception.message, exception
             render(status: 500, "${['status': "Error saving audit"] as JSON}")
         }
+
     }
 
+    def showChart(){
+        render(view: "chart")
+    }
 
-    def list() {
+    /*def getAggregatedEvents(){
+
+    }*/
+    def list(){
         List<String> auditEventTypes = auditService.getAuditEventTypes()
         List<String> auditEntryCode = auditService.getAuditEventCode()
         List<String> allUserNames = auditService.getNamesOfAllAuditedUsers()
@@ -49,20 +57,18 @@ class AuditController {
 
         print "auditevent" + auditEventTypes
         print "auditEntryCode" + auditEntryCode
-
         print "allUserNames" + allUserNames
 
         boolean initialPageLoad = !params.auditTypesToShow
 
-        if (initialPageLoad) {
+        if(initialPageLoad) {
             render(view: "showEntries", model: [auditEntries: new ArrayList<Audit>(), auditEventTypes: auditEventTypes, auditEntryCode: auditEntryCode, userNames: allUserNames, todayStart: start])
             return
         }
-
         println(params.appNames)
         println(params.auditAppToShow)
         boolean showEventsForAllApps = params.appNames && params.appNames == SHOW_EVENTS_FOR_ALL_APPS
-
+//        boolean showUserSelectedEventTypeOnly=params.type && params.type==SHOW_USER_SELECTED_EVENT_TYPE_ONLY
         boolean showEventsForAllUsers = params.users && params.users == SHOW_EVENTS_FOR_ALL_USERS
         int maxEntriesToFetch
 
@@ -87,7 +93,7 @@ class AuditController {
         def auditEntries = []
         boolean  showAllEvents = SHOW_ALL_AUDIT_EVENT_TYPES==params.auditTypesToShow
         String eventTypeToShow = params.auditEventToShow
-
+//        if(showUserSelectedEventTypeOnly)
         if(showEventsForAllApps){
             if(showEventsForAllUsers){
                 if(showAllEvents){
@@ -100,9 +106,11 @@ class AuditController {
                     auditEntries =auditService.getDateFilteredAuditEntriesForUser(params.userName, fromDate, toDate, sortOrder, maxEntriesToFetch,)
                 }else {
                     auditEntries = auditService.getDateAndTypeFilteredAuditEntriesForUser(eventTypeToShow, fromDate, toDate, params.userName, sortOrder, maxEntriesToFetch,)
-                }
-            }
-        }else {
+                }  }
+
+        }
+//     else{auditEntries=auditService.getDateAndTypeFilteredAuditEntries(eventTypeToShow,fromDate, toDate, sortOrder, maxEntriesToFetch, )}
+else {
            String appCode = params.auditAppToShow
             if(showEventsForAllUsers){
                 if(showAllEvents){
@@ -112,15 +120,12 @@ class AuditController {
                 }
             }else {
                 if(showAllEvents){
-                    auditEntries =auditService.getDateFilteredAuditEntriesForUserForApp(params.userName,fromDate, toDate, sortOrder, maxEntriesToFetch,)
+                    auditEntries =auditService.getDateFilteredAuditEntriesForUserForApp(params.userName,appCode,fromDate, toDate, sortOrder, maxEntriesToFetch,)
                 }else {
                     auditEntries = auditService.getDateAndTypeFilteredAuditEntriesForUserForApp(appCode,eventTypeToShow, fromDate, toDate, params.userName, sortOrder, maxEntriesToFetch,)
                 }
             }
-
         }
-
-
         render(view: "showEntries",
                 model: [auditEntries   : auditEntries,
                         auditEventTypes: auditEventTypes,
@@ -128,5 +133,6 @@ class AuditController {
                         userNames      : allUserNames,
                         todayStart     : start])
     }
+
 
 }

@@ -44,8 +44,9 @@ navbar-brand {
          font-size: 20px;
 }
 img{
+
  height: 700px;
- width: 1500px;
+ width: 1600px;
 }
      .button {
 
@@ -113,7 +114,7 @@ img{
 </div>
 </div>
 
-    <img src="${resource(dir: 'images', file: 'audit.jpg')}" alt=""/>
+    <img src="${resource(dir: 'images', file: 'img.jpg')}" alt=""/>
 </body>
 </html>
 

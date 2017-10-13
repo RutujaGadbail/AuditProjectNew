@@ -1,7 +1,9 @@
 package auditprojectnew
+import grails.rest.*
+import groovy.transform.ToString
 
 import java.sql.Timestamp
-
+@ToString
 class Audit {
 
     Timestamp entryDate = new Timestamp(System.currentTimeMillis())

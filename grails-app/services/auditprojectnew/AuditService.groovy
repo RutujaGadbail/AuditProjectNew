@@ -7,7 +7,7 @@ import java.sql.Timestamp
 @Transactional
 class AuditService {
 
-    def log(String auditEventType, String userId, String userName, String text, String appCode) {
+    def log(String auditEventType, String userId, String userName,  String text, String appCode) {
         Audit audit = new Audit()
         audit.type = auditEventType
         audit.entryText = text
@@ -30,7 +30,6 @@ class AuditService {
     List<Audit> getDateFilteredAuditEntriesForUser(String userName, Timestamp fromDate, Timestamp toDate, String order, int maxEntries) {
 
         return Audit.findAllByUserNameAndEntryDateBetween(userName, fromDate, toDate, [sort: 'entryDate', order: order, max: maxEntries])
-
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +38,6 @@ class AuditService {
         return Audit.findAllByTypeAndUserNameAndEntryDateBetween(auditEventType, userName, fromDate, toDate, [sort: 'entryDate', order: order, max: maxEntries])
 
     }
-
     @Transactional(readOnly = true)
     List<Audit> getAllDateFilteredAuditEntries(Timestamp fromDate, Timestamp toDate, String order, int maxEntries) {
 
@@ -53,27 +51,22 @@ class AuditService {
         return Audit.findAllByEntryDateBetweenAndEntryCode(fromDate, toDate, app, [sort: 'entryDate', order: order, max: maxEntries])
 
     }
-
     @Transactional(readOnly = true)
     List<Audit> getDateAndTypeFilteredAuditEntriesForApp(String app,String auditEventType, Timestamp fromDate, Timestamp toDate, String order, int maxEntries) {
 
         return Audit.findAllByTypeAndEntryDateBetweenAndEntryCode(auditEventType, fromDate, toDate,app, [sort: 'entryDate', order: order, max: maxEntries])
 
     }
-
     @Transactional(readOnly = true)
     List<Audit> getDateFilteredAuditEntriesForUserForApp(String app,String userName, Timestamp fromDate, Timestamp toDate, String order, int maxEntries) {
 
         return Audit.findAllByUserNameAndEntryDateBetweenAndEntryCode(userName, fromDate, toDate,app, [sort: 'entryDate', order: order, max: maxEntries])
-
     }
-
     @Transactional(readOnly = true)
     List<Audit> getDateAndTypeFilteredAuditEntriesForUserForApp(String app,String auditEventType, Timestamp fromDate, Timestamp toDate, String userName, String order, int maxEntries) {
 
         return Audit.findAllByTypeAndUserNameAndEntryDateBetweenAndEntryCode(auditEventType,userName, fromDate, toDate,app, [sort: 'entryDate', order: order, max: maxEntries])
     }
-
     /**
      * Returns a list of audit event types
      */
@@ -83,10 +76,8 @@ class AuditService {
         List<String> auditEvents = Audit.withCriteria {
             projections { distinct("type") }
         }
-
         return auditEvents
     }
-
     @Transactional(readOnly = true)
     List<String> getAuditEventCode() {
 
@@ -109,5 +100,4 @@ class AuditService {
         }
         return userNames
     }
-
 }
